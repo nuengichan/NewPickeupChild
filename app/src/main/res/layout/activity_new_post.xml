@@ -1,29 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context="com.example.database.NewPostActivity">
 
-	<EditText
-		android:id="@+id/field_title"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/activity_horizontal_margin"
-		android:hint="@string/hint_title"
-		android:maxLines="1"/>
-
-	<EditText
-		android:id="@+id/field_body"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/field_title"
-		android:layout_margin="@dimen/activity_horizontal_margin"
-		android:hint="@string/hint_body"
-		android:inputType="textMultiLine"
-		android:maxLines="10"
-		android:scrollHorizontally="false"/>
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/fab_submit_post"
@@ -33,5 +16,43 @@
 		android:layout_alignParentEnd="true"
 		android:layout_margin="@dimen/activity_vertical_margin"
 		android:src="@drawable/ic_navigation_check_24"/>
+
+	<EditText
+		android:id="@+id/field_body"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/hint_body"
+		android:inputType="textMultiLine"
+		android:maxLines="10"
+		android:scrollHorizontally="false"
+		android:layout_marginLeft="@dimen/activity_horizontal_margin"
+		android:layout_marginRight="@dimen/activity_horizontal_margin"
+		android:layout_marginTop="25dp"
+		android:layout_below="@+id/field_title"
+		android:layout_centerHorizontal="true" />
+
+	<ImageButton
+		android:layout_width="wrap_content"
+		android:layout_height="150dp"
+		app:srcCompat="@drawable/ic_insert_photo_black_24dp"
+		android:id="@+id/imageSelect"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
+		android:adjustViewBounds="true"
+		android:drawingCacheQuality="auto"
+		android:scaleType="centerCrop" />
+
+	<EditText
+		android:id="@+id/field_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/hint_title"
+		android:maxLines="1"
+		android:layout_marginLeft="@dimen/activity_horizontal_margin"
+		android:layout_marginRight="@dimen/activity_horizontal_margin"
+		android:layout_marginTop="59dp"
+		android:layout_below="@+id/imageSelect" />
+
 
 </RelativeLayout>

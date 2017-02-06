@@ -1,27 +1,42 @@
 package com.example.database;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.database.models.Post;
 import com.example.database.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NewPostActivity extends BaseActivity {
-	private DatabaseReference mDatabase;
+	private DatabaseReference mDatabase , mDatabase2;
 	private EditText mTitleField, mBodyField;
 	private FloatingActionButton mSubmitButton;
+
+	private ImageButton mSelectImage ;
+	private  static  final  int GALLERY_REQUEST = 1;
+	private Uri mImageUri = null;
+	private StorageReference mStorage ;
+	private ProgressDialog mProgress;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +46,22 @@ public class NewPostActivity extends BaseActivity {
 		mBodyField = (EditText) findViewById(R.id.field_body);
 		mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
 
+		////// เลือกรูป
+		mSelectImage =(ImageButton) findViewById(R.id.imageSelect);
+		mSelectImage.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+				galleryIntent.setType("image/*");
+				startActivityForResult(galleryIntent , GALLERY_REQUEST);
+			}
+		});
+
+		mStorage = FirebaseStorage.getInstance().getReference();
 		mDatabase = FirebaseDatabase.getInstance().getReference();
+		mDatabase2 = FirebaseDatabase.getInstance().getReference().child("/posts/");
+		mProgress = new ProgressDialog(this);
 
 		mSubmitButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -39,6 +69,17 @@ public class NewPostActivity extends BaseActivity {
 				submitPost();
 			}
 		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(requestCode == GALLERY_REQUEST && resultCode == RESULT_OK){
+
+			mImageUri  = data.getData();
+			mSelectImage.setImageURI(mImageUri);
+		}
 	}
 
 	private boolean validateForm(String title, String body) {
@@ -56,32 +97,53 @@ public class NewPostActivity extends BaseActivity {
 	}
 
 	private void submitPost() {
+
 		final String title = mTitleField.getText().toString().trim();
 		final String body = mBodyField.getText().toString().trim();
 		final String userId = getUid();
 
-		if (validateForm(title, body)) {
+
+		if (validateForm(title, body) && mImageUri != null) {
 			// Disable button so there are no multi-posts
 			setEditingEnabled(false);
-			mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot dataSnapshot) {
-					User user = dataSnapshot.getValue(User.class);
-					if (user == null) {
-						Toast.makeText(NewPostActivity.this, "Error: could not fetch user.", Toast.LENGTH_LONG).show();
-					} else {
-						writeNewPost(userId, user.username, title, body);
-					}
-					setEditingEnabled(true);
-					finish();
-				}
 
+			StorageReference filepath = mStorage.child("Student").child(mImageUri.getLastPathSegment());
+			filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 				@Override
-				public void onCancelled(DatabaseError databaseError) {
-					setEditingEnabled(true);
-					Toast.makeText(NewPostActivity.this, "onCancelled: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+					final Uri downloadeUrl = taskSnapshot.getDownloadUrl();
+
+
+
+					mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+						@Override
+						public void onDataChange(DataSnapshot dataSnapshot) {
+							User user = dataSnapshot.getValue(User.class);
+							if (user == null) {
+								Toast.makeText(NewPostActivity.this, "Error: could not fetch user.", Toast.LENGTH_LONG).show();
+							} else {
+
+
+								writeNewPost(userId, user.username, title, body , String.valueOf(downloadeUrl));
+							}
+							setEditingEnabled(true);
+							finish();
+						}
+
+						@Override
+						public void onCancelled(DatabaseError databaseError) {
+							setEditingEnabled(true);
+							Toast.makeText(NewPostActivity.this, "onCancelled: " + databaseError.getMessage(), Toast.LENGTH_LONG).show();
+						}
+					});
+
+
+
 				}
 			});
+
+
 		}
 	}
 
@@ -95,11 +157,11 @@ public class NewPostActivity extends BaseActivity {
 		}
 	}
 
-	private void writeNewPost(String userId, String username, String title, String body) {
+	private void writeNewPost(String userId, String username, String title, String body , String downloadeUrl ) {
 		// Create new post at /user-posts/$userid/$postid
 		// and at /posts/$postid simultaneously
 		String key = mDatabase.child("posts").push().getKey();
-		Post post = new Post(userId, username, title, body);
+		Post post = new Post(userId, username, title, body , downloadeUrl);
 		Map<String, Object> postValues = post.toMap();
 
 		Map<String, Object> childUpdates = new HashMap<>();
@@ -108,4 +170,6 @@ public class NewPostActivity extends BaseActivity {
 
 		mDatabase.updateChildren(childUpdates);
 	}
+
+
 }
