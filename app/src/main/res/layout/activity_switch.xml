@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+	android:paddingRight="@dimen/activity_horizontal_margin"
+	android:paddingTop="@dimen/activity_vertical_margin"
+	tools:context="com.example.database.SwitchActivity">
+
+	<ImageView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_above="@+id/button_zone"
+		android:layout_centerHorizontal="true"
+		android:src="@drawable/logo"
+		android:contentDescription="@string/app_name"/>
+
+	<LinearLayout
+		android:id="@+id/button_zone"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_centerInParent="true">
+
+		<Button
+			android:id="@+id/btn_basic"
+			style="?android:attr/button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:onClick="gotoBasic"
+			android:text="@string/btn_basic"
+			android:textAllCaps="false"/>
+
+		<Button
+			android:id="@+id/btn_advance"
+			style="?android:attr/button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:onClick="gotoAdvance"
+			android:text="@string/btn_advance"
+			android:textAllCaps="false"/>
+
+	</LinearLayout>
+
+</RelativeLayout>
