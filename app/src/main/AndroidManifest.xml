@@ -25,10 +25,13 @@
 		<activity android:name=".NewPostActivity"/>
 		<activity android:name=".PostDetailActivity"/>
 		<activity android:name=".ChatActivity"/>
+
 		<activity
 			android:name=".BasicActivity"
 			android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
 
 	</application>
 
+
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.database.models.Post;
@@ -22,15 +24,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class NewPostActivity extends BaseActivity {
-	private DatabaseReference mDatabase , mDatabase2;
+	private DatabaseReference mDatabase ;
 	private EditText mTitleField, mBodyField;
 	private FloatingActionButton mSubmitButton;
-
+	public  ImageView imageView;
 	private ImageButton mSelectImage ;
 	private  static  final  int GALLERY_REQUEST = 1;
 	private Uri mImageUri = null;
@@ -45,6 +48,7 @@ public class NewPostActivity extends BaseActivity {
 		mTitleField = (EditText) findViewById(R.id.field_title);
 		mBodyField = (EditText) findViewById(R.id.field_body);
 		mSubmitButton = (FloatingActionButton) findViewById(R.id.fab_submit_post);
+		imageView = (ImageView) findViewById(R.id.ImageViewPho);
 
 		////// เลือกรูป
 		mSelectImage =(ImageButton) findViewById(R.id.imageSelect);
@@ -60,7 +64,7 @@ public class NewPostActivity extends BaseActivity {
 
 		mStorage = FirebaseStorage.getInstance().getReference();
 		mDatabase = FirebaseDatabase.getInstance().getReference();
-		mDatabase2 = FirebaseDatabase.getInstance().getReference().child("/posts/");
+
 		mProgress = new ProgressDialog(this);
 
 		mSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -112,8 +116,12 @@ public class NewPostActivity extends BaseActivity {
 				@Override
 				public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-					final Uri downloadeUrl = taskSnapshot.getDownloadUrl();
+					final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+					//showProgressDialog();
 
+					Log.wtf("Testing valid URL", "|"+downloadUrl+"|");
+
+					//Picasso.with(mActivity.getApplicationContext()).load(model.getImage()).resize(50, 50).into(viewHolder.imageView);
 
 
 					mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -125,7 +133,7 @@ public class NewPostActivity extends BaseActivity {
 							} else {
 
 
-								writeNewPost(userId, user.username, title, body , String.valueOf(downloadeUrl));
+								writeNewPost(userId, user.username, title, body , downloadUrl.toString());
 							}
 							setEditingEnabled(true);
 							finish();

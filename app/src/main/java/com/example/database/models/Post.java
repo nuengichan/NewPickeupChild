@@ -1,6 +1,7 @@
 package com.example.database.models;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class Post {
-    private String downloadeUrl ;
+    public String downloadeUrl ;
     public String uid;
     public String author;
     public String title;
@@ -22,12 +23,17 @@ public class Post {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Post(String uid, String author, String title, String body , String downloadeUrl) {
+//    public Post(String image) {
+//        this.Image = image;
+//    }
+//
+
+    public Post(String uid, String author, String title, String body , String downloadUrl) {
         this.uid = uid;
         this.author = author;
         this.title = title;
         this.body = body;
-        this.downloadeUrl = downloadeUrl;
+        this.downloadeUrl = downloadUrl;
     }
 
     @Exclude
@@ -39,7 +45,19 @@ public class Post {
         result.put("body", body);
         result.put("starCount", starCount);
         result.put("stars", stars);
-        result.put("Image", downloadeUrl);
+        result.put("downloadeUrl", downloadeUrl);
         return result;
     }
+
+    public String getImage() {
+
+        return   downloadeUrl ;
+
+    }
+
+    public void setImage(String downloadeUrl){
+
+        this.downloadeUrl = downloadeUrl ;
+    }
+
 }

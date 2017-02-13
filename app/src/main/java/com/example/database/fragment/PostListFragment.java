@@ -2,7 +2,9 @@ package com.example.database.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -27,12 +30,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.squareup.picasso.Picasso;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public abstract class PostListFragment extends Fragment {
 	private Activity mActivity;
 	private DatabaseReference mDatabase;
 	private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
 	private RecyclerView mRecycler;
+
 
 	public PostListFragment() {
 	}
@@ -46,12 +53,17 @@ public abstract class PostListFragment extends Fragment {
 
 		mDatabase = FirebaseDatabase.getInstance().getReference();
 		return rootView;
+
 	}
+
+
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mActivity = getActivity();
+
 
 		final Dialog mDialog = new Dialog(mActivity, R.style.NewDialog);
 		mDialog.addContentView(
@@ -68,12 +80,23 @@ public abstract class PostListFragment extends Fragment {
 		mRecycler.setLayoutManager(mManager);
 
 		// Set up FirebaseRecyclerAdapter with the Query
-		Query postsQuery = getQuery(mDatabase);
+		final Query postsQuery = getQuery(mDatabase);
 		mAdapter = new FirebaseRecyclerAdapter<Post, PostViewHolder>(Post.class, R.layout.item_post, PostViewHolder.class, postsQuery) {
+
+
+
 			@Override
 			protected void populateViewHolder(final PostViewHolder viewHolder, final Post model, final int position) {
 				mDialog.dismiss();
 				final DatabaseReference postRef = getRef(position);
+
+				viewHolder.setImage(mActivity.getApplicationContext() , model.getImage());
+
+
+				//Picasso.with(mActivity.getApplicationContext()).load(model.downloadeUrl).into();
+
+
+
 
 				// Determine if the current user has liked this post and set UI accordingly
 				if (model.stars.containsKey(getUid())) {
