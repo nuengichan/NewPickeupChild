@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
+
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 	private DatabaseReference mDatabase;
 	private EditText mEmailField, mPasswordField;
@@ -46,6 +48,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 	private void onAuthSuccess(FirebaseUser firebaseUser) {
 		String email = firebaseUser.getEmail();
 		String username = email;
+
 		if (email != null && email.contains("@")) {
 			username = email.split("@")[0];
 		}

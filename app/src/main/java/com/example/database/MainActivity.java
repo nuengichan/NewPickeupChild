@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.action_chat:
 				startActivity(new Intent(this, ChatActivity.class));
 				return true;
+			case R.id.action_map:
+				startActivity(new Intent(this, MapActivity.class));
+				return true;
 			case R.id.action_logout:
 				FirebaseAuth.getInstance().signOut();
 				startActivity(new Intent(this, SignInActivity.class));

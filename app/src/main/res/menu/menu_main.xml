@@ -11,6 +11,12 @@
 		app:showAsAction="never"/>
 
 	<item
+		android:id="@+id/action_map"
+		android:title="@string/menu_map"
+		android:visible="true"
+		app:showAsAction="never"/>
+
+	<item
 		android:id="@+id/action_logout"
 		android:title="@string/menu_logout"
 		android:visible="true"
