@@ -2,8 +2,12 @@ package com.example.database;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -74,6 +78,30 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
+
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                float[] distance = new float[2];
+
+                    /*
+                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
+                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+                            */
+
+                Location.distanceBetween( location.getLatitude(), location.getLongitude(),
+                        circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+                if( distance[0] > circle.getRadius() ){
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius() , Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
     }
 
     Circle circle ;
@@ -87,7 +115,10 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 .snippet("Population: 2,074,200"));
 
         circle = drawCircle(new LatLng(13.7626198, 100.6625916));
+
+
     }
+
 
     private Circle drawCircle(LatLng latLng) {
 
@@ -98,8 +129,21 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 .strokeColor(Color.BLUE)
                 .strokeWidth(3);
 
+
+
         return mMap.addCircle(add);
+
+
+
     }
+
+
+
+
+
+
+
+
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
