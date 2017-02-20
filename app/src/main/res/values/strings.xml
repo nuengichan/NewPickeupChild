@@ -16,6 +16,7 @@
 	<string name="menu_map">Map</string>
 	<string name="menu_logout">Log out</string>
 	<string name="post">Post</string>
+	<string name="notification">Alert</string>
 	<string name="send">SEND</string>
 	<string name="required">Required</string>
 	<string name="sign_in">Sign In</string>
@@ -28,6 +29,16 @@
 		<item>My Posts</item>
 		<item>My Top Posts</item>
 	</string-array>
+
+	<string name="result">Something will happen here&#8230;</string>
+	<string name="subscribed">Subscribed to news topic</string>
+	<string name="unsubscribed">Unsubscribed from news topic</string>
+	<string name="btn_send_token">Send Token</string>
+	<string name="btn_send_tokens">Send Tokens</string>
+	<string name="btn_send_topic">Send Topic</string>
+	<string name="btn_show_token">Show Token</string>
+	<string name="btn_subscribe_news">Subscribe (News)</string>
+	<string name="btn_unsubscribe_news">Unsubscribe (News)</string>
 
 	<!--    Permissions    -->
 	<string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
