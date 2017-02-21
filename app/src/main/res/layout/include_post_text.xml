@@ -27,12 +27,14 @@
 		android:ellipsize="end"
 		android:maxLines="1"
 		android:textStyle="bold"
-		tools:text="@string/hint_title"/>
+		tools:text="@string/hint_title"
+		android:textSize="30sp" />
 
 	<TextView
 		android:id="@+id/post_body"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		tools:text="@string/hint_body"/>
+		tools:text="@string/hint_body"
+		android:textSize="20sp" />
 
 </LinearLayout>

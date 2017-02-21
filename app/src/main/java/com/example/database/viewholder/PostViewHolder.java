@@ -59,6 +59,8 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 		Picasso.with(ctx).load(downloadeUrl).into(post_image);
 		Log.wtf("Testing valid URL", "|"+downloadeUrl+"|");
 
+
+
 	}
 
 

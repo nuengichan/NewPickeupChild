@@ -9,6 +9,6 @@ public class MyTopPostsFragment extends PostListFragment {
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
         // My top posts by number of stars
-        return databaseReference.child("posts").orderByChild("starCount").startAt(1); //คุณครู
+        return databaseReference.child("students").orderByChild("starCount").startAt(1); //คุณครู
     }
 }

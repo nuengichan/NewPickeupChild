@@ -48,12 +48,14 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 	private void onAuthSuccess(FirebaseUser firebaseUser) {
 		String email = firebaseUser.getEmail();
 		String username = email;
+		String status = "0" ;
 
 		if (email != null && email.contains("@")) {
 			username = email.split("@")[0];
+			status = "0";
 		}
 
-		User user = new User(username, email);
+		User user = new User(username, email ,status);
 		mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
 
 		startActivity(new Intent(this, MainActivity.class));
@@ -72,6 +74,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 					hideProgressDialog();
 					if (task.isSuccessful()) {
 						onAuthSuccess(task.getResult().getUser());
+
 					} else {
 						Toast.makeText(SignInActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
 					}

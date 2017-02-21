@@ -7,17 +7,13 @@
 	android:gravity="center_vertical"
 	android:orientation="horizontal">
 
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/ic_action_account_circle_40"
-		android:contentDescription="@string/app_name"/>
 
 	<TextView
 		android:id="@+id/post_author"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/cardview_margin_8"
-		tools:text="someauthor@email.com"/>
+		tools:text="someauthor@email.com"
+		android:textSize="25sp" />
 
 </LinearLayout>

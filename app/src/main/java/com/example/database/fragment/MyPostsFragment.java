@@ -10,6 +10,6 @@ public class MyPostsFragment extends PostListFragment {
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
         // All my posts
-        return databaseReference.child("user-posts").child(getUid());
+        return databaseReference.child("user-students").child(getUid());
     }
 }

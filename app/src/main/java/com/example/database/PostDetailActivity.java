@@ -87,8 +87,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 		}
 
 		// Initialize Database
-		mPostReference = FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey);
-		mCommentsReference = FirebaseDatabase.getInstance().getReference().child("post-comments").child(mPostKey);
+		mPostReference = FirebaseDatabase.getInstance().getReference().child("students").child(mPostKey);
+		mCommentsReference = FirebaseDatabase.getInstance().getReference().child("students-comments").child(mPostKey);
 
 
 	}
@@ -105,8 +105,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 				Post post = dataSnapshot.getValue(Post.class);
 
 				mAuthorView.setText(post.author);
-//				mTitleView.setText(post.title);
-//				mBodyView.setText(post.body);
+				//mTitleView.setText(post.title);
+				//mBodyView.setText(post.body);
 			}
 
 			@Override
@@ -321,7 +321,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 	}
 
 	public void sendTokens(View view) {
-		sendWithOtherThread("tokens");
+		sendWithOtherThread("token");
 	}
 
 	public void sendTopic(View view) {
@@ -361,9 +361,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
 
 			switch(type) {
-				case "tokens":
+				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("eu_Vu_yqJmw:APA91bHbMwHraKVQHhBdoYHya_VFRzBjSD62nThydywmZxemOaZIX9QQ9tS7YP1sl6tSglXgQV3PsbKMWRK8s2ORxJ51HyJVT-3ZJF1e5FnhZDEOehybi1Fegb2M6CpSU6h91o2qHdEK" );
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
@@ -427,7 +427,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			switch(type2) {
 				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("eu_Vu_yqJmw:APA91bHbMwHraKVQHhBdoYHya_VFRzBjSD62nThydywmZxemOaZIX9QQ9tS7YP1sl6tSglXgQV3PsbKMWRK8s2ORxJ51HyJVT-3ZJF1e5FnhZDEOehybi1Fegb2M6CpSU6h91o2qHdEK");
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
