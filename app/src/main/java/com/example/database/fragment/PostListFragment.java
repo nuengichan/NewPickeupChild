@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.example.database.ChatActivity;
+import com.example.database.MainActivity;
+import com.example.database.NewPostActivity;
 import com.example.database.PostDetailActivity;
 import com.example.database.R;
 import com.example.database.models.Post;
@@ -101,6 +104,8 @@ public abstract class PostListFragment extends Fragment {
 				// Determine if the current user has liked this post and set UI accordingly
 				if (model.stars.containsKey(getUid())) {
 					viewHolder.starView.setImageResource(R.drawable.ic_alarm1);
+
+
 				} else {
 					viewHolder.starView.setImageResource(R.drawable.ic_alarm2);
 				}
@@ -148,7 +153,9 @@ public abstract class PostListFragment extends Fragment {
 				} else {
 					// Star the post and add self to stars
 					p.starCount = p.starCount + 1;
-					p.stars.put(getUid(), true);
+					p.stars.put(getUid(), true );
+
+
 				}
 
 				// Set value and report transaction success

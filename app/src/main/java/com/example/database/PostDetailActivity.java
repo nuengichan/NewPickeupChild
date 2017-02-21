@@ -303,7 +303,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 	public void showToken(View view) {
 		mTextView.setText(FirebaseInstanceId.getInstance().getToken());
 		Log.i("token", FirebaseInstanceId.getInstance().getToken());
-		sendWithOtherThread2("tokens");
+		sendWithOtherThread2("token");
 	}
 
 	public void subscribe(View view) {
@@ -363,7 +363,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			switch(type) {
 				case "tokens":
 					JSONArray ja = new JSONArray();
-					ja.put("dEbjHX9cOCk:APA91bFHHGS8DynvYKCzcqYumineV5hYirf4KCkmUO3Rxs99xrgum_wwvKbA_f81cSmuI_mpb7-l8sQqsZryTBugEKzj2O8GDCWOqZRU_J1vj3rMQFUMFuSuHVbf2Dte1y59Cjvgg5t_");
+					ja.put("eu_Vu_yqJmw:APA91bHbMwHraKVQHhBdoYHya_VFRzBjSD62nThydywmZxemOaZIX9QQ9tS7YP1sl6tSglXgQV3PsbKMWRK8s2ORxJ51HyJVT-3ZJF1e5FnhZDEOehybi1Fegb2M6CpSU6h91o2qHdEK" );
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
@@ -425,9 +425,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
 
 			switch(type2) {
-				case "tokens":
+				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("dEbjHX9cOCk:APA91bFHHGS8DynvYKCzcqYumineV5hYirf4KCkmUO3Rxs99xrgum_wwvKbA_f81cSmuI_mpb7-l8sQqsZryTBugEKzj2O8GDCWOqZRU_J1vj3rMQFUMFuSuHVbf2Dte1y59Cjvgg5t_");
+					ja.put("eu_Vu_yqJmw:APA91bHbMwHraKVQHhBdoYHya_VFRzBjSD62nThydywmZxemOaZIX9QQ9tS7YP1sl6tSglXgQV3PsbKMWRK8s2ORxJ51HyJVT-3ZJF1e5FnhZDEOehybi1Fegb2M6CpSU6h91o2qHdEK");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
