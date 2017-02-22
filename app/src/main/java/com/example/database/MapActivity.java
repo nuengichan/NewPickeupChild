@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,13 +32,27 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+import static com.example.database.R.id.txt;
+
 
 public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener ,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback{
-
+    private static final String AUTH_KEY = "key=AAAABRiP3KY:APA91bFsU3vuDt9bZkPaD92BlKnTz0beXZDftoypMVdTbvCRFDJ8VtRst54QmOZgDhwEya1A_VlpJEaIEIiwuKoExBOg0hHPmtu7kyJ5St9obFwLomTr4YXZCZjcWSxUJnp74SVcIE5M";
+    private TextView mTextView;
     private static final LatLng School = new LatLng(13.7626198, 100.6625916 );
     private Marker mSelectedMarker;
     /**
@@ -51,22 +68,38 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
      */
     private boolean mPermissionDenied = false;
 
-    private GoogleMap mMap;
+    private GoogleMap mMap , mMap2;
 
-    private Marker add;
+    private Marker add , add2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        mTextView = (TextView) findViewById(txt);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String tmp = "";
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                tmp += key + ": " + value + "\n\n";
+            }
+            mTextView.setText(tmp);
+        }
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        mMap2 = map;
 
         mMap.getUiSettings().setZoomControlsEnabled(false);
         addMarkersToMap();
@@ -92,17 +125,50 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                             mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
                             */
 
-                Location.distanceBetween( location.getLatitude(), location.getLongitude(),
+
+
+
+                Location.distanceBetween(location.getLatitude(), location.getLongitude(),
                         circle.getCenter().latitude, circle.getCenter().longitude, distance);
 
-                if( distance[0] > circle.getRadius() ){
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius() , Toast.LENGTH_LONG).show();
+
+              if (distance[0] > circle.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+
+                } else  {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+                    sendWithOtherThread("token"); mMap.setOnMyLocationChangeListener(null);
+
                 }
+            }
+        });
+
+
+        mMap2.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location2) {
+                float[] distance2 = new float[2];
+
+                    /*
+                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
+                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+                            */
+
+
+                Location.distanceBetween(location2.getLatitude(), location2.getLongitude(),
+                        circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
 
 
 
+
+                if (distance2[0] > circle2.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+                    sendWithOtherThread("token"); mMap2.setOnMyLocationChangeListener(null);
+
+                }
             }
         });
 
@@ -110,6 +176,91 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
     }
 
     Circle circle ;
+
+    Circle circle2 ;
+    public void sendTokens(View view) {
+        sendWithOtherThread("token");
+    }
+
+    private void sendWithOtherThread(final String type) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                pushNotification(type);
+            }
+        }).start();
+    }
+
+
+    private void pushNotification(String type) {
+        JSONObject jPayload = new JSONObject();
+        JSONObject jNotification = new JSONObject();
+        JSONObject jData = new JSONObject();
+        try {
+            jNotification.put("title", "ด.ช. ปิยธร คะเสนา");
+            jNotification.put("body", "กำลังไปรับ");
+            jNotification.put("sound", "default");
+            jNotification.put("badge", "1");
+            jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+            //jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+            switch(type) {
+                case "token":
+                    JSONArray ja = new JSONArray();
+                    ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+                    ja.put(FirebaseInstanceId.getInstance().getToken());
+                    jPayload.put("registration_ids", ja);
+                    break;
+                case "topic":
+                    jPayload.put("to", "/topics/news");
+                    break;
+                case "condition":
+                    jPayload.put("condition", "'sport' in topics || 'news' in topics");
+                    break;
+                default:
+                    jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+            }
+
+            jPayload.put("priority", "high");
+            jPayload.put("notification", jNotification);
+            jPayload.put("data", jData);
+
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", AUTH_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // Send FCM message content.
+            OutputStream outputStream = conn.getOutputStream();
+            outputStream.write(jPayload.toString().getBytes());
+
+            // Read FCM response.
+            InputStream inputStream = conn.getInputStream();
+            final String resp = convertStreamToString(inputStream);
+
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTextView.setText(resp);
+                }
+            });
+        }
+
+
+        catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String convertStreamToString(InputStream is) {
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next().replace(",", ",\n") : "";
+    }
 
 
     private void addMarkersToMap() {
@@ -119,9 +270,27 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 .title("School")
                 .snippet("Population: 2,074,200"));
 
+        add2 = mMap2.addMarker(new MarkerOptions()
+                .position(School)
+                .title("School")
+                .snippet("Population: 2,074,200"));
+
         circle = drawCircle(new LatLng(13.7626198, 100.6625916));
 
+        circle2 = drawCircle2(new LatLng(13.7626198, 100.6625916));
+    }
 
+    private Circle drawCircle2(LatLng latLng) {
+
+
+        CircleOptions add2 = new CircleOptions()
+                .center(latLng)
+                .radius(2500)
+                .fillColor(0x33FF1493)
+                .strokeColor(Color.BLUE)
+                .strokeWidth(5);
+
+        return mMap2.addCircle(add2);
     }
 
 
@@ -129,11 +298,10 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
         CircleOptions add = new CircleOptions()
                 .center(latLng)
-                .radius(100)
-                .fillColor(0x33FF0000)
+                .radius(1000)
+                .fillColor(0x3300BFFF)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(3);
-
 
 
         return mMap.addCircle(add);
