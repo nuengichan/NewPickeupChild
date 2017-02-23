@@ -136,7 +136,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 }
                 else  if (distance3[0] < circle3.getRadius()) {
                     Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread2("token");
+                    sendWithOtherThread("token");
 
 
                 }
@@ -151,7 +151,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 }
                 else  if (distance2[0] < circle2.getRadius()) {
                     Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread2("token");
+                    sendWithOtherThread("token");
 
 
                 }
@@ -169,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 }
               else  {
                     Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread("token");
+                    sendWithOtherThread2("token");
                   mMap.setOnMyLocationChangeListener(null);
 
                 }
@@ -283,8 +283,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
         JSONObject jNotification = new JSONObject();
         JSONObject jData = new JSONObject();
         try {
-            jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
-            jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
+            jNotification.put("title", "กำลังจะถึงที่หมาย");
+            jNotification.put("body", "ไม่กี่นาทีจะถึงโรงเรียน");
             jNotification.put("sound", "default");
             jNotification.put("badge", "1");
             jNotification.put("click_action", "OPEN_ACTIVITY_1");

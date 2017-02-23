@@ -41,12 +41,13 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.example.database.R.id.txt ;
+
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
 	private static final String TAG = "PostDetailActivity";
 	public static final String EXTRA_POST_KEY = "post_key";
 	private static final String AUTH_KEY = "key=AAAABRiP3KY:APA91bFsU3vuDt9bZkPaD92BlKnTz0beXZDftoypMVdTbvCRFDJ8VtRst54QmOZgDhwEya1A_VlpJEaIEIiwuKoExBOg0hHPmtu7kyJ5St9obFwLomTr4YXZCZjcWSxUJnp74SVcIE5M";
 	private TextView mTextView;
-	private DatabaseReference mPostReference, mCommentsReference;
+	private DatabaseReference mPostReference, mCommentsReference , mDatabase;
 	private ValueEventListener mPostListener;
 	private CommentAdapter mAdapter;
 	private TextView mAuthorView, mTitleView, mBodyView;
@@ -89,6 +90,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 		// Initialize Database
 		mPostReference = FirebaseDatabase.getInstance().getReference().child("students").child(mPostKey);
 		mCommentsReference = FirebaseDatabase.getInstance().getReference().child("students-comments").child(mPostKey);
+
+
+
 
 
 	}
@@ -146,6 +150,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
 	private void postComment() {
 		final String uid = getUid();
+
 		FirebaseDatabase.getInstance().getReference().child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
@@ -337,6 +342,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 		}).start();
 	}
 
+
+
+
+
+
+
 	private void sendWithOtherThread2(final String type2) {
 		new Thread(new Runnable() {
 			@Override
@@ -348,12 +359,13 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
 
 	private void pushNotification(String type) {
+
 		JSONObject jPayload = new JSONObject();
 		JSONObject jNotification = new JSONObject();
 		JSONObject jData = new JSONObject();
 		try {
 			jNotification.put("title", "ด.ช. ปิยธร คะเสนา");
-			jNotification.put("body", "กำลังไปรับ");
+			jNotification.put("body", "กำลังไปรับ"  );
 			jNotification.put("sound", "default");
 			jNotification.put("badge", "1");
 			jNotification.put("click_action", "OPEN_ACTIVITY_1");
