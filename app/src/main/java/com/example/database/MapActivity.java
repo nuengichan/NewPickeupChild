@@ -119,58 +119,73 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMyLocationChange(Location location) {
                 float[] distance = new float[2];
-
+                float[] distance2 = new float[4];
                     /*
                     Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
                             mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
                             */
+                Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                        circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
+
+                if (distance2[0] > circle2.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+
+                }
+                else  if (distance2[0] < circle2.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+                    sendWithOtherThread("token");
 
 
+                }
 
 
                 Location.distanceBetween(location.getLatitude(), location.getLongitude(),
                         circle.getCenter().latitude, circle.getCenter().longitude, distance);
 
 
+
+
               if (distance[0] > circle.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
 
-                } else  {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread("token"); mMap.setOnMyLocationChangeListener(null);
+                }
+              else  {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+                    sendWithOtherThread("token");
+                  mMap.setOnMyLocationChangeListener(null);
 
                 }
             }
         });
 
 
-        mMap2.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location2) {
-                float[] distance2 = new float[2];
-
-                    /*
-                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
-                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
-                            */
-
-
-                Location.distanceBetween(location2.getLatitude(), location2.getLongitude(),
-                        circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
-
-
-
-
-                if (distance2[0] > circle2.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-
-                } else {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread("token"); mMap2.setOnMyLocationChangeListener(null);
-
-                }
-            }
-        });
+//        mMap2.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+//            @Override
+//            public void onMyLocationChange(Location location2) {
+//                float[] distance2 = new float[2];
+//
+//                    /*
+//                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
+//                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+//                            */
+//
+//
+//                Location.distanceBetween(location2.getLatitude(), location2.getLongitude(),
+//                        circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
+//
+//
+//
+//
+//                if (distance2[0] > circle2.getRadius()) {
+//                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+//
+//                } else {
+//                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+//                    sendWithOtherThread("token");
+//
+//                }
+//            }
+//        });
 
 
     }
@@ -275,9 +290,9 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 .title("School")
                 .snippet("Population: 2,074,200"));
 
-        circle = drawCircle(new LatLng(13.7626198, 100.6625916));
+        circle = drawCircle(new LatLng(13.7626198, 100.6625916) );
 
-        circle2 = drawCircle2(new LatLng(13.7626198, 100.6625916));
+        circle2 = drawCircle2(new LatLng(13.763246, 100.649291));
     }
 
     private Circle drawCircle2(LatLng latLng) {
@@ -285,12 +300,12 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
         CircleOptions add2 = new CircleOptions()
                 .center(latLng)
-                .radius(2500)
+                .radius(80)
                 .fillColor(0x33FF1493)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(5);
 
-        return mMap2.addCircle(add2);
+        return mMap.addCircle(add2);
     }
 
 
