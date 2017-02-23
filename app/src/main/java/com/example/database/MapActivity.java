@@ -120,10 +120,28 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
             public void onMyLocationChange(Location location) {
                 float[] distance = new float[2];
                 float[] distance2 = new float[4];
+                float[] distance3 = new float[4];
                     /*
                     Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
                             mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
                             */
+
+                Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                        circle3.getCenter().latitude, circle3.getCenter().longitude, distance3);
+
+
+                if (distance3[0] > circle3.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_LONG).show();
+
+                }
+                else  if (distance3[0] < circle3.getRadius()) {
+                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_LONG).show();
+                    sendWithOtherThread2("token");
+
+
+                }
+
+
                 Location.distanceBetween(location.getLatitude(), location.getLongitude(),
                         circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
 
@@ -133,7 +151,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                 }
                 else  if (distance2[0] < circle2.getRadius()) {
                     Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-                    sendWithOtherThread("token");
+                    sendWithOtherThread2("token");
 
 
                 }
@@ -159,42 +177,20 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
         });
 
 
-//        mMap2.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-//            @Override
-//            public void onMyLocationChange(Location location2) {
-//                float[] distance2 = new float[2];
-//
-//                    /*
-//                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
-//                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
-//                            */
-//
-//
-//                Location.distanceBetween(location2.getLatitude(), location2.getLongitude(),
-//                        circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
-//
-//
-//
-//
-//                if (distance2[0] > circle2.getRadius()) {
-//                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-//
-//                } else {
-//                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
-//                    sendWithOtherThread("token");
-//
-//                }
-//            }
-//        });
-
 
     }
 
     Circle circle ;
 
     Circle circle2 ;
+
+    Circle circle3 ;
     public void sendTokens(View view) {
         sendWithOtherThread("token");
+    }
+
+    public void sendTokens2(View view) {
+        sendWithOtherThread2("token");
     }
 
     private void sendWithOtherThread(final String type) {
@@ -212,8 +208,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
         JSONObject jNotification = new JSONObject();
         JSONObject jData = new JSONObject();
         try {
-            jNotification.put("title", "ด.ช. ปิยธร คะเสนา");
-            jNotification.put("body", "กำลังไปรับ");
+            jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
+            jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
             jNotification.put("sound", "default");
             jNotification.put("badge", "1");
             jNotification.put("click_action", "OPEN_ACTIVITY_1");
@@ -272,6 +268,82 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
     }
 
 
+    private void sendWithOtherThread2(final String type) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                pushNotification2(type);
+            }
+        }).start();
+    }
+
+
+    private void pushNotification2(String type) {
+        JSONObject jPayload = new JSONObject();
+        JSONObject jNotification = new JSONObject();
+        JSONObject jData = new JSONObject();
+        try {
+            jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
+            jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
+            jNotification.put("sound", "default");
+            jNotification.put("badge", "1");
+            jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+            //jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+            switch(type) {
+                case "token":
+                    JSONArray ja = new JSONArray();
+                    ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+                    ja.put(FirebaseInstanceId.getInstance().getToken());
+                    jPayload.put("registration_ids", ja);
+                    break;
+                case "topic":
+                    jPayload.put("to", "/topics/news");
+                    break;
+                case "condition":
+                    jPayload.put("condition", "'sport' in topics || 'news' in topics");
+                    break;
+                default:
+                    jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+            }
+
+            jPayload.put("priority", "high");
+            jPayload.put("notification", jNotification);
+            jPayload.put("data", jData);
+
+            URL url = new URL("https://fcm.googleapis.com/fcm/send");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", AUTH_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            // Send FCM message content.
+            OutputStream outputStream = conn.getOutputStream();
+            outputStream.write(jPayload.toString().getBytes());
+
+            // Read FCM response.
+            InputStream inputStream = conn.getInputStream();
+            final String resp = convertStreamToString(inputStream);
+
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTextView.setText(resp);
+                }
+            });
+        }
+
+
+        catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     private String convertStreamToString(InputStream is) {
         Scanner s = new Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next().replace(",", ",\n") : "";
@@ -293,6 +365,21 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
         circle = drawCircle(new LatLng(13.7626198, 100.6625916) );
 
         circle2 = drawCircle2(new LatLng(13.763246, 100.649291));
+
+        circle3 = drawCircle3(new LatLng(13.772699, 100.665926));
+    }
+
+    private Circle drawCircle3(LatLng latLng) {
+
+
+        CircleOptions add2 = new CircleOptions()
+                .center(latLng)
+                .radius(50)
+                .fillColor(0x33FF1493)
+                .strokeColor(Color.BLUE)
+                .strokeWidth(5);
+
+        return mMap.addCircle(add2);
     }
 
     private Circle drawCircle2(LatLng latLng) {
@@ -300,7 +387,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
         CircleOptions add2 = new CircleOptions()
                 .center(latLng)
-                .radius(80)
+                .radius(50)
                 .fillColor(0x33FF1493)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(5);
@@ -313,7 +400,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
         CircleOptions add = new CircleOptions()
                 .center(latLng)
-                .radius(1000)
+                .radius(400)
                 .fillColor(0x3300BFFF)
                 .strokeColor(Color.BLUE)
                 .strokeWidth(3);

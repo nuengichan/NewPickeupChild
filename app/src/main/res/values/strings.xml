@@ -25,9 +25,9 @@
 	<string name="wrote">You wrote: %s</string>
 
 	<string-array name="headings">
-		<item>Recent</item>
-		<item>My Posts</item>
-		<item>My Top Posts</item>
+		<item>All Student</item>
+		<item>My Student</item>
+		<item>Arrive</item>
 	</string-array>
 
 	<string name="result">Something will happen here&#8230;</string>
