@@ -47,13 +47,14 @@ public abstract class PostListFragment extends Fragment {
 	public PostListFragment() {
 	}
 
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View rootView = inflater.inflate(R.layout.fragment_all_posts, container, false);
 		mRecycler = (RecyclerView) rootView.findViewById(R.id.messages_list);
 		mRecycler.setHasFixedSize(true);
-
 		mDatabase = FirebaseDatabase.getInstance().getReference();
 		return rootView;
 
@@ -103,11 +104,11 @@ public abstract class PostListFragment extends Fragment {
 
 				// Determine if the current user has liked this post and set UI accordingly
 				if (model.stars.containsKey(getUid())) {
-					viewHolder.starView.setImageResource(R.drawable.ic_alarm1);
+					viewHolder.starView.setImageResource(R.drawable.ic_drive_eta_black_48dp);
 
 
 				} else {
-					viewHolder.starView.setImageResource(R.drawable.ic_alarm2);
+					viewHolder.starView.setImageResource(R.drawable.ic_drive_eta_black_48dp);
 				}
 
 				// Bind Post to ViewHolder, setting OnClickListener for the star button

@@ -1,6 +1,7 @@
 package com.example.database.fragment;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 public class MyPostsFragment extends PostListFragment {
@@ -12,4 +13,6 @@ public class MyPostsFragment extends PostListFragment {
         // All my posts
         return databaseReference.child("user-students").child(getUid());
     }
+
+
 }

@@ -37,31 +37,6 @@
 
 	</LinearLayout>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/layout_email_password"
-		android:orientation="horizontal"
-		android:id="@+id/linearLayout2">
-
-		<Button
-			style="?android:attr/button"
-			android:id="@+id/button_sign_in"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/sign_in"/>
-
-		<Button
-			style="?android:attr/button"
-			android:id="@+id/button_sign_up"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="@string/sign_up"/>
-
-	</LinearLayout>
-
 	<ImageView
 		android:id="@+id/icon"
 		android:layout_width="wrap_content"
@@ -71,5 +46,34 @@
 		android:layout_above="@+id/linearLayout2"
 		android:layout_centerHorizontal="true"
 		android:layout_marginBottom="24dp" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:id="@+id/linearLayout2"
+		android:layout_below="@+id/layout_email_password"
+		android:layout_alignParentStart="true"
+		android:layout_marginTop="36dp">
+
+		<Button
+			style="?android:attr/button"
+			android:id="@+id/button_sign_in"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/sign_in"
+			android:background="@color/colorAccent" />
+
+		<Button
+			style="?android:attr/button"
+			android:id="@+id/button_sign_up"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="@string/sign_up"
+			android:visibility="gone"/>
+
+	</LinearLayout>
 
 </RelativeLayout>

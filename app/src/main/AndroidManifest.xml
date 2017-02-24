@@ -39,7 +39,8 @@
             android:value="@integer/google_play_services_version" />
 
 
-        <activity android:name=".SignInActivity">
+        <activity android:name=".introSlider.WelcomeActivity"
+             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="OPEN_DETAIL_ACTIVITY" />
@@ -48,8 +49,11 @@
 
             </intent-filter>
         </activity>
-        <!-- <activity android:name=".SignInActivity"/> -->
-        <activity android:name=".MainActivity" />
+
+        <activity android:name=".SignInActivity"
+           />
+        <activity android:name=".MainActivity"
+             />
         <activity android:name=".NewPostActivity" />
         <activity android:name=".PostDetailActivity" />
         <activity android:name=".ChatActivity" />

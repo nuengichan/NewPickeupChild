@@ -14,7 +14,8 @@
 		android:layout_height="36dp"
 		android:id="@+id/messengerImageView"
 		android:src="@drawable/ic_action_account_circle_40"
-		android:contentDescription="@string/app_name"/>
+		android:contentDescription="@string/app_name"
+		android:visibility="gone"/>
 
 	<LinearLayout
 		android:layout_width="wrap_content"

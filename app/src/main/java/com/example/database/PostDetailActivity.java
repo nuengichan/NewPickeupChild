@@ -1,9 +1,16 @@
 package com.example.database;
 
+import android.*;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +25,14 @@ import android.widget.Toast;
 import com.example.database.models.Comment;
 import com.example.database.models.Post;
 import com.example.database.models.User;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +57,11 @@ import java.util.Scanner;
 
 import static com.example.database.R.id.txt ;
 
-public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
+public class PostDetailActivity extends BaseActivity implements View.OnClickListener ,GoogleMap.OnMyLocationButtonClickListener ,
+		GoogleMap.OnMapClickListener,
+		GoogleMap.OnMarkerClickListener,
+		OnMapReadyCallback,
+		ActivityCompat.OnRequestPermissionsResultCallback {
 	private static final String TAG = "PostDetailActivity";
 	public static final String EXTRA_POST_KEY = "post_key";
 	private static final String AUTH_KEY = "key=AAAABRiP3KY:APA91bFsU3vuDt9bZkPaD92BlKnTz0beXZDftoypMVdTbvCRFDJ8VtRst54QmOZgDhwEya1A_VlpJEaIEIiwuKoExBOg0hHPmtu7kyJ5St9obFwLomTr4YXZCZjcWSxUJnp74SVcIE5M";
@@ -53,6 +72,18 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 	private TextView mAuthorView, mTitleView, mBodyView;
 	private EditText mCommentField;
 	private RecyclerView mCommentsRecycler;
+	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+	private static final LatLng School = new LatLng(13.7626198, 100.6625916 );
+	private Marker mSelectedMarker;
+	/**
+	 * Flag indicating whether a requested permission has been denied after returning in
+	 * {@link #onRequestPermissionsResult(int, String[], int[])}.
+	 */
+	private boolean mPermissionDenied = false;
+
+	private GoogleMap mMap , mMap2;
+
+	private Marker add , add2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +123,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 		mCommentsReference = FirebaseDatabase.getInstance().getReference().child("students-comments").child(mPostKey);
 
 
-
+		SupportMapFragment mapFragment =
+				(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		mapFragment.getMapAsync(this);
 
 
 	}
@@ -428,7 +461,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 		JSONObject jNotification = new JSONObject();
 		JSONObject jData = new JSONObject();
 		try {
-			jNotification.put("title", "ด.ช. หนึ่ง คะเสนา");
+			jNotification.put("title", "ด.ญ. หนึ่ง คะเสนา");
 			jNotification.put("body", "กำลังไปรับ");
 			jNotification.put("sound", "default");
 			jNotification.put("badge", "1");
@@ -492,5 +525,406 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 	private String convertStreamToString(InputStream is) {
 		Scanner s = new Scanner(is).useDelimiter("\\A");
 		return s.hasNext() ? s.next().replace(",", ",\n") : "";
+	}
+
+
+
+
+	////////////////////////////////
+	////
+	//// map
+
+	public void onMapReady(GoogleMap map) {
+		mMap = map;
+		mMap2 = map;
+
+		mMap.getUiSettings().setZoomControlsEnabled(false);
+		addMarkersToMap();
+		// Set listener for marker click event.  See the bottom of this class for its behavior.
+		mMap.setOnMarkerClickListener(this);
+
+		// Set listener for map click event.  See the bottom of this class for its behavior.
+		mMap.setOnMapClickListener(this);
+
+
+
+
+		mMap.setOnMyLocationButtonClickListener(this);
+		enableMyLocation();
+
+		mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+			@Override
+			public void onMyLocationChange(Location location) {
+				float[] distance = new float[2];
+				float[] distance2 = new float[4];
+				float[] distance3 = new float[4];
+                    /*
+                    Location.distanceBetween( mMarker.getPosition().latitude, mMarker.getPosition().longitude,
+                            mCircle.getCenter().latitude, mCircle.getCenter().longitude, distance);
+                            */
+
+				Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+						circle3.getCenter().latitude, circle3.getCenter().longitude, distance3);
+
+
+				if (distance3[0] > circle3.getRadius()) {
+					//Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_LONG).show();
+
+				}
+				else  if (distance3[0] < circle3.getRadius()) {
+					//Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_LONG).show();
+					sendWithOtherThread3("token");
+
+
+				}
+
+
+				Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+						circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
+
+				if (distance2[0] > circle2.getRadius()) {
+					//Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+
+				}
+				else  if (distance2[0] < circle2.getRadius()) {
+					//Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_LONG).show();
+					sendWithOtherThread3("token");
+
+
+				}
+
+
+				Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+						circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+
+
+
+				if (distance[0] > circle.getRadius()) {
+					//Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+
+				}
+				else  {
+					//Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+					sendWithOtherThread4("token");
+					mMap.setOnMyLocationChangeListener(null);
+
+				}
+			}
+		});
+
+
+
+	}
+	Circle circle ;
+
+	Circle circle2 ;
+
+	Circle circle3 ;
+	public void sendTokens3(View view) {
+		sendWithOtherThread3("token");
+	}
+
+	public void sendTokens4(View view) {
+		sendWithOtherThread4("token");
+	}
+
+	private void sendWithOtherThread3(final String type) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				pushNotification3(type);
+			}
+		}).start();
+	}
+
+
+	private void pushNotification3(String type) {
+		JSONObject jPayload = new JSONObject();
+		JSONObject jNotification = new JSONObject();
+		JSONObject jData = new JSONObject();
+		try {
+			jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
+			jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
+			jNotification.put("sound", "default");
+			jNotification.put("badge", "1");
+			jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+			switch(type) {
+				case "token":
+					JSONArray ja = new JSONArray();
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+					ja.put(FirebaseInstanceId.getInstance().getToken());
+					jPayload.put("registration_ids", ja);
+					break;
+				case "topic":
+					jPayload.put("to", "/topics/news");
+					break;
+				case "condition":
+					jPayload.put("condition", "'sport' in topics || 'news' in topics");
+					break;
+				default:
+					jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+			}
+
+			jPayload.put("priority", "high");
+			jPayload.put("notification", jNotification);
+			jPayload.put("data", jData);
+
+			URL url = new URL("https://fcm.googleapis.com/fcm/send");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", AUTH_KEY);
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			// Send FCM message content.
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(jPayload.toString().getBytes());
+
+			// Read FCM response.
+			InputStream inputStream = conn.getInputStream();
+			final String resp = convertStreamToString(inputStream);
+
+			Handler h = new Handler(Looper.getMainLooper());
+			h.post(new Runnable() {
+				@Override
+				public void run() {
+					mTextView.setText(resp);
+				}
+			});
+		}
+
+
+		catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void sendWithOtherThread4(final String type) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				pushNotification4(type);
+			}
+		}).start();
+	}
+
+
+	private void pushNotification4(String type) {
+		JSONObject jPayload = new JSONObject();
+		JSONObject jNotification = new JSONObject();
+		JSONObject jData = new JSONObject();
+		try {
+			jNotification.put("title", "กำลังจะถึงที่หมาย");
+			jNotification.put("body", "ไม่กี่นาทีจะถึงโรงเรียน");
+			jNotification.put("sound", "default");
+			jNotification.put("badge", "1");
+			jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+			switch(type) {
+				case "token":
+					JSONArray ja = new JSONArray();
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+					ja.put(FirebaseInstanceId.getInstance().getToken());
+					jPayload.put("registration_ids", ja);
+					break;
+				case "topic":
+					jPayload.put("to", "/topics/news");
+					break;
+				case "condition":
+					jPayload.put("condition", "'sport' in topics || 'news' in topics");
+					break;
+				default:
+					jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+			}
+
+			jPayload.put("priority", "high");
+			jPayload.put("notification", jNotification);
+			jPayload.put("data", jData);
+
+			URL url = new URL("https://fcm.googleapis.com/fcm/send");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", AUTH_KEY);
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			// Send FCM message content.
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(jPayload.toString().getBytes());
+
+			// Read FCM response.
+			InputStream inputStream = conn.getInputStream();
+			final String resp = convertStreamToString(inputStream);
+
+			Handler h = new Handler(Looper.getMainLooper());
+			h.post(new Runnable() {
+				@Override
+				public void run() {
+					mTextView.setText(resp);
+				}
+			});
+		}
+
+
+		catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void addMarkersToMap() {
+
+		add = mMap.addMarker(new MarkerOptions()
+				.position(School)
+				.title("School")
+				.snippet("Population: 2,074,200"));
+
+		add2 = mMap2.addMarker(new MarkerOptions()
+				.position(School)
+				.title("School")
+				.snippet("Population: 2,074,200"));
+
+		circle = drawCircle(new LatLng(13.7626198, 100.6625916) );
+
+		circle2 = drawCircle2(new LatLng(13.763246, 100.649291));
+
+		circle3 = drawCircle3(new LatLng(13.772699, 100.665926));
+	}
+
+	private Circle drawCircle3(LatLng latLng) {
+
+
+		CircleOptions add2 = new CircleOptions()
+				.center(latLng)
+				.radius(50)
+				.fillColor(0x33FF1493)
+				.strokeColor(Color.BLUE)
+				.strokeWidth(5);
+
+		return mMap.addCircle(add2);
+	}
+
+	private Circle drawCircle2(LatLng latLng) {
+
+
+		CircleOptions add2 = new CircleOptions()
+				.center(latLng)
+				.radius(50)
+				.fillColor(0x33FF1493)
+				.strokeColor(Color.BLUE)
+				.strokeWidth(5);
+
+		return mMap.addCircle(add2);
+	}
+
+
+	private Circle drawCircle(LatLng latLng) {
+
+		CircleOptions add = new CircleOptions()
+				.center(latLng)
+				.radius(400)
+				.fillColor(0x3300BFFF)
+				.strokeColor(Color.BLUE)
+				.strokeWidth(3);
+
+
+		return mMap.addCircle(add);
+
+
+
+	}
+
+	/**
+	 * Enables the My Location layer if the fine location permission has been granted.
+	 */
+	private void enableMyLocation() {
+		if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) {
+			// Permission to access the location is missing.
+			PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+					android.Manifest.permission.ACCESS_FINE_LOCATION, true);
+
+		} else if (mMap != null) {
+			// Access to the location has been granted to the app.
+			mMap.setMyLocationEnabled(true);
+
+		}
+	}
+
+	@Override
+	public boolean onMyLocationButtonClick() {
+		Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+		// Return false so that we don't consume the event and the default behavior still occurs
+		// (the camera animates to the user's current position).
+		return false;
+	}
+
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+										   @NonNull int[] grantResults) {
+		if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+			return;
+		}
+
+		if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+				android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+			// Enable the my location layer if the permission has been granted.
+			enableMyLocation();
+		} else {
+			// Display the missing permission error dialog when the fragments resume.
+			mPermissionDenied = true;
+		}
+	}
+
+	@Override
+	protected void onResumeFragments() {
+		super.onResumeFragments();
+		if (mPermissionDenied) {
+			// Permission was not granted, display error dialog.
+			showMissingPermissionError();
+			mPermissionDenied = false;
+		}
+	}
+
+	/**
+	 * Displays a dialog with error message explaining that the location permission is missing.
+	 */
+	private void showMissingPermissionError() {
+		PermissionUtils.PermissionDeniedDialog
+				.newInstance(true).show(getSupportFragmentManager(), "dialog");
+	}
+
+	@Override
+	public void onMapClick(final LatLng point) {
+		// Any showing info window closes when the map is clicked.
+		// Clear the currently selected marker.
+		mSelectedMarker = null;
+	}
+
+	@Override
+	public boolean onMarkerClick(final Marker marker) {
+		// The user has re-tapped on the marker which was already showing an info window.
+		if (marker.equals(mSelectedMarker)) {
+			// The showing info window has already been closed - that's the first thing to happen
+			// when any marker is clicked.
+			// Return true to indicate we have consumed the event and that we do not want the
+			// the default behavior to occur (which is for the camera to move such that the
+			// marker is centered and for the marker's info window to open, if it has one).
+			mSelectedMarker = null;
+			return true;
+		}
+
+		mSelectedMarker = marker;
+
+		// Return false to indicate that we have not consumed the event and that we wish
+		// for the default behavior to occur.
+		return false;
 	}
 }
