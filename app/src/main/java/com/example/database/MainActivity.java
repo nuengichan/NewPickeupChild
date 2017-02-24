@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
 		FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 			private final Fragment[] mFragments = new Fragment[] {
-					//new RecentPostsFragment(), /// เด็กทั้งหมด
-					new MyPostsFragment(), //////เด็กของฉัน
+					new RecentPostsFragment(), /// เด็กทั้งหมด
+					//new MyPostsFragment(), //////เด็กของฉัน
 					new MyTopPostsFragment() /////// กำลังไปรับ
 			};
 

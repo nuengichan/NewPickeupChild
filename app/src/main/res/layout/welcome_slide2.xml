@@ -5,24 +5,28 @@
     android:background="@color/bg_screen2">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_width="match_parent">
 
         <ImageView
-            android:layout_width="@dimen/img_width_height"
-            android:layout_height="@dimen/img_width_height"
-            android:src="@drawable/ic_alarm1" />
+            android:layout_width="287dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_b"
+            android:id="@+id/imageView" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/slide_2_title"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_title"
-            android:textStyle="bold" />
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:id="@+id/textView2"
+            android:textSize="35sp"
+            android:textAlignment="center" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +37,8 @@
             android:text="@string/slide_2_desc"
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_desc" />
+            android:id="@+id/textView3"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

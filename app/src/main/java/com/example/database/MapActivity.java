@@ -131,11 +131,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
 
                 if (distance3[0] > circle3.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_SHORT).show();
 
                 }
                 else  if (distance3[0] < circle3.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle3.getRadius(), Toast.LENGTH_SHORT).show();
                     sendWithOtherThread("token");
 
 
@@ -146,11 +146,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
                         circle2.getCenter().latitude, circle2.getCenter().longitude, distance2);
 
                 if (distance2[0] > circle2.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_SHORT).show();
 
                 }
                 else  if (distance2[0] < circle2.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance2[0] + " radius: " + circle2.getRadius(), Toast.LENGTH_SHORT).show();
                     sendWithOtherThread("token");
 
 
@@ -164,11 +164,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
 
 
               if (distance[0] > circle.getRadius()) {
-                    Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(getBaseContext(), "Outside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
 
                 }
               else  {
-                    Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(getBaseContext(), "Inside, distance from center: " + distance[0] + " radius: " + circle.getRadius(), Toast.LENGTH_LONG).show();
                     sendWithOtherThread2("token");
                   mMap.setOnMyLocationChangeListener(null);
 
