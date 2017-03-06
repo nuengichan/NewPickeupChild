@@ -25,10 +25,10 @@
 	<string name="wrote">You wrote: %s</string>
 
 	<string-array name="headings">
-
+		<!--<item>My Student</item>-->
 		<item>All Student</item>
 		<item>ON THE WAY</item>
-		<item>My Student</item>
+
 	</string-array>
 
 	<string name="result">Something will happen here&#8230;</string>

@@ -3,10 +3,12 @@ package com.example.database.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -121,11 +123,16 @@ public abstract class PostListFragment extends Fragment {
 
 						// Run two transactions
 						onStarClicked(globalPostRef);
-						onStarClicked(userPostRef);
+                        onStarClicked(userPostRef);
 					}
 				});
 
-				viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//
+
+
+
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent(mActivity, PostDetailActivity.class);
@@ -138,37 +145,77 @@ public abstract class PostListFragment extends Fragment {
 		mRecycler.setAdapter(mAdapter);
 	}
 
-	private void onStarClicked(DatabaseReference postRef) {
-		postRef.runTransaction(new Transaction.Handler() {
-			@Override
-			public Transaction.Result doTransaction(MutableData mutableData) {
-				Post p = mutableData.getValue(Post.class);
-				if (p == null) {
-					return Transaction.success(mutableData);
-				}
-
-				if (p.stars.containsKey(getUid())) {
-					// Unstar the post and remove self from stars
-					p.starCount = p.starCount - 1;
-					p.stars.remove(getUid());
-				} else {
-					// Star the post and add self to stars
-					p.starCount = p.starCount + 1;
-					p.stars.put(getUid(), true );
+	private void onStarClicked(final DatabaseReference postRef) {
 
 
-				}
 
-				// Set value and report transaction success
-				mutableData.setValue(p);
-				return Transaction.success(mutableData);
-			}
+		new AlertDialog.Builder(getContext())
+				.setTitle("Delete entry")
+				.setMessage("Are you sure you want to delete this entry?")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int which) {
 
-			@Override
-			public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-				Log.d("postTransaction", "onComplete:" + dataSnapshot.getKey());
-			}
-		});
+								postRef.runTransaction(new Transaction.Handler() {
+									@Override
+									public Transaction.Result doTransaction(MutableData mutableData) {
+										Post p = mutableData.getValue(Post.class);
+										if (p == null) {
+											return Transaction.success(mutableData);
+										}
+
+
+
+											p.starCount = p.starCount + 1;
+											p.stars.put(getUid(), true );
+
+
+
+
+										// Set value and report transaction success
+										mutableData.setValue(p);
+										return Transaction.success(mutableData);
+									}
+
+									@Override
+									public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+										Log.d("postTransaction", "onComplete:" + dataSnapshot.getKey());
+									}
+								});
+
+							}
+						})
+				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+                        postRef.runTransaction(new Transaction.Handler() {
+                            @Override
+                            public Transaction.Result doTransaction(MutableData mutableData) {
+                                Post p = mutableData.getValue(Post.class);
+                                if (p == null) {
+                                    return Transaction.success(mutableData);
+                                }
+
+
+                                    // Unstar the post and remove self from stars
+                                    p.starCount = p.starCount - 1;
+                                    p.stars.remove(getUid());
+
+                                // Set value and report transaction success
+                                mutableData.setValue(p);
+                                return Transaction.success(mutableData);
+                            }
+
+                            @Override
+                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                Log.d("postTransaction", "onComplete:" + dataSnapshot.getKey());
+                            }
+                        });
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+
+
 	}
 
 	@Override

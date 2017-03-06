@@ -24,7 +24,7 @@
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentEnd="true"
 		android:layout_margin="@dimen/activity_vertical_margin"
-		android:src="@drawable/ic_image_edit"
-		android:visibility="gone"/>
+		android:src="@drawable/ic_image_edit"/>
+		<!--android:visibility="gone"/>-->
 
 </RelativeLayout>
