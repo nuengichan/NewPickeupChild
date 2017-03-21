@@ -24,6 +24,9 @@
 	<string name="username">Current username: %s \n\n</string>
 	<string name="wrote">You wrote: %s</string>
 
+	<string name="yes1">You wrote: %s</string>
+
+
 	<string-array name="headings">
 		<!--<item>My Student</item>-->
 		<item>All Student</item>

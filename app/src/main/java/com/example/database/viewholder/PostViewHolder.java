@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 public class PostViewHolder extends RecyclerView.ViewHolder {
 	public ImageView starView;
+	public ImageView starView2;
 	public ImageView  imageView;
 	private TextView authorView;
 	private TextView bodyView;
@@ -50,6 +51,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 		numStarsView.setText(String.valueOf(post.starCount));
 		bodyView.setText(post.body);
 		starView.setOnClickListener(starClickListener);
+
 
 	}
 

@@ -1,10 +1,8 @@
 package com.example.database.models;
 
-import android.net.Uri;
-import android.util.Log;
-
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +15,7 @@ public class Post {
     public String title;
     public String body;
     public int starCount = 0;
+    public long TimeAdd ;
     public Map<String, Boolean> stars = new HashMap<>();
 
     public Post() {
@@ -46,7 +45,11 @@ public class Post {
         result.put("starCount", starCount);
         result.put("stars", stars);
         result.put("downloadeUrl", downloadeUrl);
+        result.put("TimeAdd", ServerValue.TIMESTAMP);
+
+
         return result;
+
     }
 
     public String getImage() {

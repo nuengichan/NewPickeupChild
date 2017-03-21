@@ -2,10 +2,8 @@ package com.example.database.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,36 +13,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-
-import com.example.database.ChatActivity;
-import com.example.database.MainActivity;
+import android.widget.Toast;
+import com.example.database.models.User;
 import com.example.database.NewPostActivity;
 import com.example.database.PostDetailActivity;
 import com.example.database.R;
 import com.example.database.models.Post;
+import com.example.database.models.Topic;
+import com.example.database.models.User;
 import com.example.database.viewholder.PostViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
-import com.squareup.picasso.Picasso;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class PostListFragment extends Fragment {
 	private Activity mActivity;
 	private DatabaseReference mDatabase;
 	private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
 	private RecyclerView mRecycler;
-
+	final String userId = getUid();
 
 	public PostListFragment() {
 	}
@@ -96,10 +97,10 @@ public abstract class PostListFragment extends Fragment {
 				mDialog.dismiss();
 				final DatabaseReference postRef = getRef(position);
 
+
 				viewHolder.setImage(mActivity.getApplicationContext() , model.getImage());
 
 
-				//Picasso.with(mActivity.getApplicationContext()).load(model.downloadeUrl).into();
 
 
 
@@ -107,29 +108,57 @@ public abstract class PostListFragment extends Fragment {
 				// Determine if the current user has liked this post and set UI accordingly
 				if (model.stars.containsKey(getUid())) {
 					viewHolder.starView.setImageResource(R.drawable.ic_drive_eta_black_48dp);
-
+					//Picasso.with(mActivity.getApplicationContext()).load(model.downloadeUrl).into();
 
 				} else {
-					viewHolder.starView.setImageResource(R.drawable.ic_drive_eta_black_48dp);
+					viewHolder.starView.setImageResource(R.drawable.ic_alarm2);
 				}
 
 				// Bind Post to ViewHolder, setting OnClickListener for the star button
 				viewHolder.bindToPost(model, new View.OnClickListener() {
 					@Override
 					public void onClick(View starView) {
+						switch (starView.getId()) {
+							case R.id.star:
+								FirebaseUser firebaser = FirebaseAuth.getInstance().getCurrentUser();
+								//User user = ;
+								String uid = firebaser.getUid();
+								//String avatar = firebaser.getPhotoUrl().toString();
+								//String speaker = "Jirawatee";
+								//String picture = "https://pbs.twimg.com/media/C4yDZ6QUkAEJ0ZW.jpg";
+								String title = model.title;
+								String author = model.author;
+
+								final Topic topic = new Topic(uid, author, title);
+								Map<String, Object> topicValues = topic.toMap();
+								Map<String, Object> childUpdates = new HashMap<>();
+
+								String topicKey = mDatabase.push().getKey();
+								childUpdates.put("/Times/" + topicKey, topicValues );
+								childUpdates.put("/Times-topics/" + uid + "/" + topicKey, topicValues);
+
+
+
+								//MyHelper.showDialog(this);
+								mDatabase.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+									@Override
+									public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+										//MyHelper.dismissDialog();
+
+									}
+								});
+								break;
+						}
+
 						// Need to write to both places the post is stored
 						DatabaseReference globalPostRef = mDatabase.child("students").child(postRef.getKey());
-						DatabaseReference userPostRef = mDatabase.child("user-students").child(model.uid).child(postRef.getKey());
 
+						DatabaseReference userPostRef = mDatabase.child("user-students").child(model.uid).child(postRef.getKey());
 						// Run two transactions
 						onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
 					}
 				});
-
-//
-
-
 
 
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -145,14 +174,17 @@ public abstract class PostListFragment extends Fragment {
 		mRecycler.setAdapter(mAdapter);
 	}
 
-	private void onStarClicked(final DatabaseReference postRef) {
+
+
+
+	private void onStarClicked(final DatabaseReference postRef ) {
 
 
 
 		new AlertDialog.Builder(getContext())
 				.setTitle("Delete entry")
 				.setMessage("Are you sure you want to delete this entry?")
-				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int which) {
 
@@ -164,13 +196,8 @@ public abstract class PostListFragment extends Fragment {
 											return Transaction.success(mutableData);
 										}
 
-
-
-											p.starCount = p.starCount + 1;
+											p.starCount = p.starCount + 1 ;
 											p.stars.put(getUid(), true );
-
-
-
 
 										// Set value and report transaction success
 										mutableData.setValue(p);
@@ -182,7 +209,6 @@ public abstract class PostListFragment extends Fragment {
 										Log.d("postTransaction", "onComplete:" + dataSnapshot.getKey());
 									}
 								});
-
 							}
 						})
 				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -202,6 +228,7 @@ public abstract class PostListFragment extends Fragment {
 
                                 // Set value and report transaction success
                                 mutableData.setValue(p);
+
                                 return Transaction.success(mutableData);
                             }
 
