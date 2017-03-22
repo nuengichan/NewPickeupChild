@@ -5,7 +5,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.database.models.User;
 import com.example.database.NewPostActivity;
@@ -36,15 +40,31 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import static com.example.database.R.id.txt;
 
 public abstract class PostListFragment extends Fragment {
 	private Activity mActivity;
 	private DatabaseReference mDatabase;
 	private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
 	private RecyclerView mRecycler;
+	public static final String EXTRA_POST_KEY = "post_key";
+	private static final String AUTH_KEY = "key=AAAABRiP3KY:APA91bFsU3vuDt9bZkPaD92BlKnTz0beXZDftoypMVdTbvCRFDJ8VtRst54QmOZgDhwEya1A_VlpJEaIEIiwuKoExBOg0hHPmtu7kyJ5St9obFwLomTr4YXZCZjcWSxUJnp74SVcIE5M";
+	private TextView mTextView;
 	final String userId = getUid();
 
 	public PostListFragment() {
@@ -59,6 +79,17 @@ public abstract class PostListFragment extends Fragment {
 		mRecycler = (RecyclerView) rootView.findViewById(R.id.messages_list);
 		mRecycler.setHasFixedSize(true);
 		mDatabase = FirebaseDatabase.getInstance().getReference();
+
+		mTextView = (TextView) rootView.findViewById(txt);
+		Bundle bundle = getActivity().getIntent().getExtras();
+		if (bundle != null) {
+			String tmp = "";
+			for (String key : bundle.keySet()) {
+				Object value = bundle.get(key);
+				tmp += key + ": " + value + "\n\n";
+			}
+			mTextView.setText(tmp);
+		}
 		return rootView;
 
 	}
@@ -112,6 +143,7 @@ public abstract class PostListFragment extends Fragment {
 
 				} else {
 					viewHolder.starView.setImageResource(R.drawable.ic_alarm2);
+
 				}
 
 				// Bind Post to ViewHolder, setting OnClickListener for the star button
@@ -157,6 +189,8 @@ public abstract class PostListFragment extends Fragment {
 						// Run two transactions
 						onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
+
+
 					}
 				});
 
@@ -199,15 +233,21 @@ public abstract class PostListFragment extends Fragment {
 											p.starCount = p.starCount + 1 ;
 											p.stars.put(getUid(), true );
 
+
 										// Set value and report transaction success
 										mutableData.setValue(p);
+
+										sendWithOtherThread("token");
 										return Transaction.success(mutableData);
 									}
 
 									@Override
 									public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
 										Log.d("postTransaction", "onComplete:" + dataSnapshot.getKey());
+
 									}
+
+
 								});
 							}
 						})
@@ -253,9 +293,175 @@ public abstract class PostListFragment extends Fragment {
 		}
 	}
 
+	public void sendTokens(View view) {
+		sendWithOtherThread("token");
+	}
+
+	public void sendTokens2(View view) {
+		sendWithOtherThread2("token");
+	}
+
+	private void sendWithOtherThread(final String type) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				pushNotification(type);
+			}
+		}).start();
+	}
+
+
+	private void pushNotification(String type) {
+		JSONObject jPayload = new JSONObject();
+		JSONObject jNotification = new JSONObject();
+		JSONObject jData = new JSONObject();
+		try {
+			jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
+			jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
+			jNotification.put("sound", "default");
+			jNotification.put("badge", "1");
+			jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+			switch(type) {
+				case "token":
+					JSONArray ja = new JSONArray();
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+					ja.put(FirebaseInstanceId.getInstance().getToken());
+					jPayload.put("registration_ids", ja);
+					break;
+				case "topic":
+					jPayload.put("to", "/topics/news");
+					break;
+				case "condition":
+					jPayload.put("condition", "'sport' in topics || 'news' in topics");
+					break;
+				default:
+					jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+			}
+
+			jPayload.put("priority", "high");
+			jPayload.put("notification", jNotification);
+			jPayload.put("data", jData);
+
+			URL url = new URL("https://fcm.googleapis.com/fcm/send");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", AUTH_KEY);
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			// Send FCM message content.
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(jPayload.toString().getBytes());
+
+			// Read FCM response.
+			InputStream inputStream = conn.getInputStream();
+			final String resp = convertStreamToString(inputStream);
+
+			Handler h = new Handler(Looper.getMainLooper());
+			h.post(new Runnable() {
+				@Override
+				public void run() {
+					mTextView.setText(resp);
+				}
+			});
+		}
+
+
+		catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void sendWithOtherThread2(final String type) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				pushNotification2(type);
+			}
+		}).start();
+	}
+
+
+	private void pushNotification2(String type) {
+		JSONObject jPayload = new JSONObject();
+		JSONObject jNotification = new JSONObject();
+		JSONObject jData = new JSONObject();
+		try {
+			jNotification.put("title", "กำลังจะถึงที่หมาย");
+			jNotification.put("body", "ไม่กี่นาทีจะถึงโรงเรียน");
+			jNotification.put("sound", "default");
+			jNotification.put("badge", "1");
+			jNotification.put("click_action", "OPEN_ACTIVITY_1");
+
+			//jData.put("picture_url", "http://opsbug.com/static/google-io.jpg");
+
+			switch(type) {
+				case "token":
+					JSONArray ja = new JSONArray();
+					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+					ja.put(FirebaseInstanceId.getInstance().getToken());
+					jPayload.put("registration_ids", ja);
+					break;
+				case "topic":
+					jPayload.put("to", "/topics/news");
+					break;
+				case "condition":
+					jPayload.put("condition", "'sport' in topics || 'news' in topics");
+					break;
+				default:
+					jPayload.put("to", FirebaseInstanceId.getInstance().getToken());
+			}
+
+			jPayload.put("priority", "high");
+			jPayload.put("notification", jNotification);
+			jPayload.put("data", jData);
+
+			URL url = new URL("https://fcm.googleapis.com/fcm/send");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Authorization", AUTH_KEY);
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setDoOutput(true);
+
+			// Send FCM message content.
+			OutputStream outputStream = conn.getOutputStream();
+			outputStream.write(jPayload.toString().getBytes());
+
+			// Read FCM response.
+			InputStream inputStream = conn.getInputStream();
+			final String resp = convertStreamToString(inputStream);
+
+			Handler h = new Handler(Looper.getMainLooper());
+			h.post(new Runnable() {
+				@Override
+				public void run() {
+					mTextView.setText(resp);
+				}
+			});
+		}
+
+
+		catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	private String convertStreamToString(InputStream is) {
+		Scanner s = new Scanner(is).useDelimiter("\\A");
+		return s.hasNext() ? s.next().replace(",", ",\n") : "";
+	}
+
 	public String getUid() {
 		return FirebaseAuth.getInstance().getCurrentUser().getUid();
 	}
 
 	public abstract Query getQuery(DatabaseReference databaseReference);
+
+
 }

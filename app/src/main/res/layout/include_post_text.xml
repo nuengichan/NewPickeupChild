@@ -1,40 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
 	android:padding="@dimen/cardview_margin_4"
-	android:weightSum="1"
-	>
+	android:weightSum="1">
 
-
-	<ImageView
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="150dp"
-		app:srcCompat="@android:color/holo_orange_dark"
-		android:id="@+id/ImageViewPho"
+		android:layout_height="115dp"
+		android:padding="@dimen/activity_margin">
 
-		/>
+		<TextView
+			android:id="@+id/txt"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/result"
+			android:textSize="0.1sp" />
 
-	<TextView
-		android:id="@+id/post_title"
-		style="@style/TextAppearance.AppCompat.Medium"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:ellipsize="end"
-		android:maxLines="1"
-		android:textStyle="bold"
-		tools:text="@string/hint_title"
-		android:textSize="30sp" />
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/ImageViewPho"
+			android:layout_width="@dimen/avatar80"
+			android:layout_height="@dimen/avatar80"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentStart="true"
+			android:layout_alignParentTop="true"
+			android:src="@mipmap/ic_launcher" />
 
-	<TextView
-		android:id="@+id/post_body"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		tools:text="@string/hint_body"
-		android:textSize="20sp" />
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_toEndOf="@+id/ImageViewPho">
+
+			<TextView
+				android:id="@+id/post_author"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentTop="true"
+				android:layout_marginStart="13dp"
+				android:layout_toEndOf="@+id/textView6"
+				android:textAllCaps="false"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				tools:text="user" />
+
+			<TextView
+				android:id="@+id/post_title"
+				style="@style/TextAppearance.AppCompat.Medium"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_above="@+id/post_body"
+				android:layout_alignStart="@+id/post_author"
+				android:textSize="17sp"
+				tools:text="@string/hint_title" />
+
+			<TextView
+				android:id="@+id/post_body"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+
+
+				android:layout_alignStart="@+id/post_title"
+				android:layout_below="@+id/textView7"
+				android:textSize="15sp"
+				tools:text="@string/hint_body" />
+
+			<TextView
+				android:id="@+id/textView6"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignBaseline="@+id/post_author"
+				android:layout_alignBottom="@+id/post_author"
+				android:layout_alignParentStart="true"
+				android:layout_marginStart="15dp"
+				android:text="P :"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				tools:text="P :" />
+
+			<TextView
+				android:id="@+id/textView7"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+
+				android:layout_alignEnd="@+id/textView6"
+				android:layout_centerVertical="true"
+				android:text="S :"
+				android:textSize="18sp"
+				android:textStyle="bold"
+				tools:text="S :" />
+
+			<ImageView
+				android:id="@+id/star"
+				android:layout_width="40dp"
+				android:layout_height="34dp"
+				android:layout_alignParentEnd="true"
+				android:contentDescription="@string/app_name"
+				android:onClick="showToken"
+				android:src="@drawable/ic_alarm2" />
+
+		</RelativeLayout>
+
+	</RelativeLayout>
 
 </LinearLayout>

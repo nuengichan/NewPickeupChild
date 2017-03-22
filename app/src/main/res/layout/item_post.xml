@@ -12,14 +12,7 @@
 		android:layout_height="wrap_content"
 		android:padding="@dimen/cardview_margin_8">
 
-		<include
-			android:id="@+id/post_author_layout"
-			layout="@layout/include_post_author"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			android:layout_alignParentStart="true"
-			 />
+
 
 		<LinearLayout
 			android:layout_width="wrap_content"
@@ -29,7 +22,8 @@
 			android:layout_alignTop="@+id/post_author_layout"
 			android:gravity="center_vertical"
 			android:orientation="horizontal"
-			android:id="@+id/linearLayout3">
+			android:id="@+id/linearLayout3"
+			android:visibility="gone">
 
 			<TextView
 				android:id="@+id/post_num_stars"
@@ -41,23 +35,14 @@
 
 		</LinearLayout>
 
-		<ImageView
-            android:id="@+id/star"
-			android:src="@drawable/ic_alarm2"
-            android:contentDescription="@string/app_name"
-			android:layout_marginEnd="14dp"
-			android:layout_marginTop="11dp"
-			android:layout_alignParentTop="true"
-			android:layout_toStartOf="@+id/linearLayout3"
-			android:layout_width="50dp"
-			android:layout_height="50dp" />
+
 
 		<include
 			layout="@layout/include_post_text"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_below="@+id/star"
-			android:layout_toStartOf="@+id/linearLayout3" />
+			android:layout_alignParentStart="true"
+			 />
 
 	</RelativeLayout>
 
