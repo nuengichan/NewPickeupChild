@@ -14,6 +14,8 @@
 	<string name="hint_username">Username…</string>
 	<string name="menu_chat">Chat</string>
 	<string name="menu_map">Map</string>
+	<string name="report">Report</string>
+	<string name="same_category_this_week">Same Category This Week</string>
 	<string name="menu_logout">Log out</string>
 	<string name="post">Post</string>
 	<string name="notification">Alert</string>
@@ -24,7 +26,8 @@
 	<string name="username">Current username: %s \n\n</string>
 	<string name="wrote">You wrote: %s</string>
 
-	<string name="yes1">You wrote: %s</string>
+	<string name="yes1">ยืนยัน</string>
+	<string name="sent_predefine">Predefine event sent.</string>
 
 
 	<string-array name="headings">

@@ -12,21 +12,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.database.fragment.MyPostsFragment;
 import com.example.database.fragment.MyTopPostsFragment;
 import com.example.database.fragment.RecentPostsFragment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-
+	private FirebaseAnalytics mFirebaseAnalytics;
+	private static final String USER_PROPERTY = "Time_pickup";
+	private TextView mTextView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mTextView = (TextView) findViewById(R.id.textview2);
 
-
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+		mFirebaseAnalytics.setUserProperty("Time_pickup", "Pickup");
+		mTextView.setText(String.format("UserProperty: %s", USER_PROPERTY));
 
 		FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 			private final Fragment[] mFragments = new Fragment[] {
@@ -63,7 +71,22 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// screen name must be <= 36 characters
+		mFirebaseAnalytics.setCurrentScreen(this, "CurrentScreen: " + getClass().getSimpleName(), null);
+	}
 
+
+	public void showToken(View view) {
+		Bundle bundle = new Bundle();
+		bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "12345");
+		bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Nougat");
+		bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Image");
+		mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+		mTextView.setText(R.string.sent_predefine);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
 				return true;
 			case R.id.action_map:
 				startActivity(new Intent(this, MapActivity.class));
+				return true;
+			case R.id.action_report:
+				startActivity(new Intent(this, ReportHisActivity.class));
 				return true;
 			case R.id.action_logout:
 				FirebaseAuth.getInstance().signOut();

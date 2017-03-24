@@ -9,13 +9,13 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class Post {
-    public String downloadeUrl ;
+    public String downloadeUrl;
     public String uid;
     public String author;
     public String title;
     public String body;
+    public Map<String, String> Timeadd;
     public int starCount = 0;
-    public long TimeAdd ;
     public Map<String, Boolean> stars = new HashMap<>();
 
     public Post() {
@@ -27,7 +27,7 @@ public class Post {
 //    }
 //
 
-    public Post(String uid, String author, String title, String body , String downloadUrl) {
+    public Post(String uid, String author, String title, String body, String downloadUrl) {
         this.uid = uid;
         this.author = author;
         this.title = title;
@@ -45,22 +45,48 @@ public class Post {
         result.put("starCount", starCount);
         result.put("stars", stars);
         result.put("downloadeUrl", downloadeUrl);
-        result.put("TimeAdd", ServerValue.TIMESTAMP);
+        result.put("TimeAdd", getTime());
 
 
         return result;
 
     }
+    public Map<String, String> getTime() {
+
+        Timeadd = ServerValue.TIMESTAMP ;
+        return Timeadd;
+    }
+
+
 
     public String getImage() {
 
-        return   downloadeUrl ;
+        return downloadeUrl;
 
     }
 
-    public void setImage(String downloadeUrl){
+    public void setImage(String downloadeUrl) {
 
-        this.downloadeUrl = downloadeUrl ;
+        this.downloadeUrl = downloadeUrl;
     }
+
+    public String author() {
+
+        return author;
+    }
+
+
+
+    public void gettitle (String title) {
+
+        this.title = title;
+    }
+
+    public String body() {
+
+        return body;
+    }
+
+
 
 }

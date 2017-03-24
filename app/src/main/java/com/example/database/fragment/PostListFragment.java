@@ -142,7 +142,7 @@ public abstract class PostListFragment extends Fragment {
 					//Picasso.with(mActivity.getApplicationContext()).load(model.downloadeUrl).into();
 
 				} else {
-					viewHolder.starView.setImageResource(R.drawable.ic_alarm2);
+					viewHolder.starView.setImageResource(R.drawable.ic_alarm1);
 
 				}
 
@@ -188,7 +188,7 @@ public abstract class PostListFragment extends Fragment {
 						DatabaseReference userPostRef = mDatabase.child("user-students").child(model.uid).child(postRef.getKey());
 						// Run two transactions
 						onStarClicked(globalPostRef);
-                        onStarClicked(userPostRef);
+                       // onStarClicked(userPostRef);
 
 
 					}
@@ -216,9 +216,9 @@ public abstract class PostListFragment extends Fragment {
 
 
 		new AlertDialog.Builder(getContext())
-				.setTitle("Delete entry")
-				.setMessage("Are you sure you want to delete this entry?")
-				.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
+				.setTitle("รับเด็กนักเรียน")
+				.setMessage("กด ตกลง เพื่อทำการแจ้งเตือน")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialogInterface, int which) {
 
@@ -279,7 +279,7 @@ public abstract class PostListFragment extends Fragment {
                         });
 					}
 				})
-				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setIcon(R.drawable.ic_alarm1)
 				.show();
 
 
@@ -316,8 +316,8 @@ public abstract class PostListFragment extends Fragment {
 		JSONObject jNotification = new JSONObject();
 		JSONObject jData = new JSONObject();
 		try {
-			jNotification.put("title", "อีก 5 กิโลเมตรถึงโรงเรียน");
-			jNotification.put("body", "อีก 5 กิโลเมตรถึงโรงเรียน");
+			jNotification.put("title", "กำลังเดินทางไปรับเด็กนักเรียน");
+			jNotification.put("body", " ");
 			jNotification.put("sound", "default");
 			jNotification.put("badge", "1");
 			jNotification.put("click_action", "OPEN_ACTIVITY_1");
