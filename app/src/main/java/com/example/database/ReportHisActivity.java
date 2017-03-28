@@ -72,7 +72,7 @@ public class ReportHisActivity extends AppCompatActivity  implements View.OnClic
 
         mRecyclerViewTopic.setLayoutManager(mLayoutManager);
         mRecyclerViewTopic.setAdapter(mReportAdapter);
-        mChildRef = mRootRef.child("students") ;
+        mChildRef = mRootRef.child("Times") ;
         mChildRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

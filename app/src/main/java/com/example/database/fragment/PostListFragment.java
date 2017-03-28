@@ -327,7 +327,7 @@ public abstract class PostListFragment extends Fragment {
 			switch(type) {
 				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("eC3Pf6jsBEg:APA91bHeZDIXgnp2vZgIfl20LZ4XsjthyJ2OkWZXypankHgLMhnewn2P1f3QV0aKKxiirvKHJstoWSauNe4pbBFz0JAsssmocBCJYvXzWRb7kbkljBuFLctMHTv8qt_x7EMJcVoqfT6a");
+					ja.put("e1vIMCk1Orc:APA91bHWgYprcphiC7ILRsEFEbVXhOIGh-HLLzEkNxD_pWZ2kYTWpXKXw_NVPfWav8zyOI4DBMRyY7b6zy9QRWXtZDQZ16FfeZo4kn00Qco3kwUDLhkgw-zLUNRzYdEKyW47jVLUIJhk");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;

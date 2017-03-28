@@ -41,7 +41,7 @@
 				android:layout_marginStart="13dp"
 				android:layout_toEndOf="@+id/textView6"
 				android:textAllCaps="false"
-				android:textSize="18sp"
+				android:textSize="15sp"
 				android:textStyle="bold"
 				tools:text="user" />
 
@@ -52,7 +52,7 @@
 				android:layout_height="wrap_content"
 				android:layout_above="@+id/post_body"
 				android:layout_alignStart="@+id/post_author"
-				android:textSize="17sp"
+				android:textSize="14sp"
 				tools:text="@string/hint_title" />
 
 			<TextView
@@ -63,7 +63,7 @@
 
 				android:layout_alignStart="@+id/post_title"
 				android:layout_below="@+id/textView7"
-				android:textSize="15sp"
+				android:textSize="14sp"
 				tools:text="@string/hint_body" />
 
 			<TextView

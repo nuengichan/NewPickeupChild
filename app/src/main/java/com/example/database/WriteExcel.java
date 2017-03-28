@@ -114,8 +114,8 @@ public class WriteExcel {
         addCaption(sheet, 0, 1, "ลำดับ");
         addCaption(sheet, 1, 1, "ชื่อผู้ปกครอง");
         addCaption(sheet, 2, 1, "ชื่อเด็กนักเรียน");
-        addCaption(sheet, 3, 1, "ระดับชั้น");
-        addCaption(sheet, 4, 1, "เวลามารับ");
+        //addCaption(sheet, 3, 1, "ระดับชั้น");
+       // addCaption(sheet, 4, 1, "เวลามารับ");
 
 
 

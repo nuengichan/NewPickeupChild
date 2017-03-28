@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
 		FragmentPagerAdapter mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 			private final Fragment[] mFragments = new Fragment[] {
-					new RecentPostsFragment(), /// เด็กทั้งหมด
-					//new MyPostsFragment(), //////เด็กของฉัน
+					//new RecentPostsFragment(), /// เด็กทั้งหมด
+					new MyPostsFragment(), //////เด็กของฉัน
 					new MyTopPostsFragment() /////// กำลังไปรับ
 			};
 
@@ -103,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.action_map:
 				startActivity(new Intent(this, MapActivity.class));
 				return true;
-			case R.id.action_report:
-				startActivity(new Intent(this, ReportHisActivity.class));
-				return true;
+//			case R.id.action_report:
+//				startActivity(new Intent(this, ReportHisActivity.class));
+//				return true;
 			case R.id.action_logout:
 				FirebaseAuth.getInstance().signOut();
 				startActivity(new Intent(this, SignInActivity.class));

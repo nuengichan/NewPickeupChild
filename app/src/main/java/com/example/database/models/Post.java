@@ -14,7 +14,7 @@ public class Post {
     public String author;
     public String title;
     public String body;
-    public Map<String, String> Timeadd;
+//    public Map<String, String> Timeadd;
     public int starCount = 0;
     public Map<String, Boolean> stars = new HashMap<>();
 
@@ -45,17 +45,17 @@ public class Post {
         result.put("starCount", starCount);
         result.put("stars", stars);
         result.put("downloadeUrl", downloadeUrl);
-        result.put("TimeAdd", getTime());
+        result.put("TimeAdd", ServerValue.TIMESTAMP);
 
 
         return result;
 
     }
-    public Map<String, String> getTime() {
-
-        Timeadd = ServerValue.TIMESTAMP ;
-        return Timeadd;
-    }
+//    public Map<String, String> getTime() {
+//
+//        Timeadd = ServerValue.TIMESTAMP ;
+//        return Timeadd;
+//    }
 
 
 

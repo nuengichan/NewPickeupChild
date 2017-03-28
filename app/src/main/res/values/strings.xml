@@ -31,8 +31,8 @@
 
 
 	<string-array name="headings">
-		<!--<item>My Student</item>-->
-		<item>All Student</item>
+		<item>My Student</item>
+		<!--<item>All Student</item>-->
 		<item>ON THE WAY</item>
 
 	</string-array>
