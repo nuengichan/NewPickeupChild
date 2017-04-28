@@ -31,8 +31,8 @@
 
 
 	<string-array name="headings">
-		<item>My Student</item>
-		<!--<item>All Student</item>-->
+		<!--<item>My Student</item>-->
+		<item>All Student</item>
 		<item>ON THE WAY</item>
 
 	</string-array>
@@ -59,7 +59,7 @@
 	<string name="skip">SKIP</string>
 	<string name="start">GOT IT</string>
 
-	<string name="slide_1_title"> ยินดีตอนรับ</string>
+	<string name="slide_1_title"> ยินดีต้อนรับ</string>
 	<string name="slide_1_desc">หน้าแรกแสดงข้อมูลลูกของคุณ</string>
 
 	<string name="slide_2_title">ON THE WAY</string>

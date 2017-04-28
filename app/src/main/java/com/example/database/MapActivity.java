@@ -355,12 +355,12 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMyLoca
         add = mMap.addMarker(new MarkerOptions()
                 .position(School)
                 .title("School")
-                .snippet("Population: 2,074,200"));
+                .snippet("Population: 1,200"));
 
         add2 = mMap2.addMarker(new MarkerOptions()
                 .position(School)
                 .title("School")
-                .snippet("Population: 2,074,200"));
+                .snippet("Population: 1,200"));
 
         circle = drawCircle(new LatLng(13.7626198, 100.6625916) );
 

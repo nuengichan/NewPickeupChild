@@ -10,17 +10,17 @@
 		android:visible="true"
 		app:showAsAction="never"/>
 
-	<item
-		android:id="@+id/action_map"
-		android:title="@string/menu_map"
-		android:visible="true"
-		app:showAsAction="never"/>
-
 	<!--<item-->
-		<!--android:id="@+id/action_report"-->
-		<!--android:title="@string/report"-->
+		<!--android:id="@+id/action_map"-->
+		<!--android:title="@string/menu_map"-->
 		<!--android:visible="true"-->
 		<!--app:showAsAction="never"/>-->
+
+	<item
+		android:id="@+id/action_report"
+		android:title="@string/report"
+		android:visible="true"
+		app:showAsAction="never"/>
 
 	<item
 		android:id="@+id/action_logout"

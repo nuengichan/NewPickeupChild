@@ -656,7 +656,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			switch(type) {
 				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("e1vIMCk1Orc:APA91bHWgYprcphiC7ILRsEFEbVXhOIGh-HLLzEkNxD_pWZ2kYTWpXKXw_NVPfWav8zyOI4DBMRyY7b6zy9QRWXtZDQZ16FfeZo4kn00Qco3kwUDLhkgw-zLUNRzYdEKyW47jVLUIJhk");
+					ja.put("eMSv1RPzOnw:APA91bHRD5gyjn0GWpF6N-Yugewlxw3WGqBpWH63TfD7BMNgr41qkRD5W20fp38dRfdCCg5GOU37ZsAK2kudpJY1D4vz787HWN5WJaE0E5qx6oPqDjfmHdV-JKSQMepv-Bm5VRjUmwl8");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
@@ -731,7 +731,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 			switch(type) {
 				case "token":
 					JSONArray ja = new JSONArray();
-					ja.put("e1vIMCk1Orc:APA91bHWgYprcphiC7ILRsEFEbVXhOIGh-HLLzEkNxD_pWZ2kYTWpXKXw_NVPfWav8zyOI4DBMRyY7b6zy9QRWXtZDQZ16FfeZo4kn00Qco3kwUDLhkgw-zLUNRzYdEKyW47jVLUIJhk");
+					ja.put("eMSv1RPzOnw:APA91bHRD5gyjn0GWpF6N-Yugewlxw3WGqBpWH63TfD7BMNgr41qkRD5W20fp38dRfdCCg5GOU37ZsAK2kudpJY1D4vz787HWN5WJaE0E5qx6oPqDjfmHdV-JKSQMepv-Bm5VRjUmwl8");
 					ja.put(FirebaseInstanceId.getInstance().getToken());
 					jPayload.put("registration_ids", ja);
 					break;
